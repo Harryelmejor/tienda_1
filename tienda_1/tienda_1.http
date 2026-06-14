@@ -1,6 +1,82 @@
 @tienda_1_HostAddress = http://localhost:5074
 
-GET {{tienda_1_HostAddress}}/weatherforecast/
+### Categorías
+
+GET {{tienda_1_HostAddress}}/api/categories
 Accept: application/json
 
 ###
+
+GET {{tienda_1_HostAddress}}/api/categories/1
+Accept: application/json
+
+###
+
+POST {{tienda_1_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Seguridad Industrial",
+  "description": "Cascos, guantes, gafas, etc."
+}
+
+###
+
+PUT {{tienda_1_HostAddress}}/api/categories/1
+Content-Type: application/json
+
+{
+  "name": "Herramientas Manuales",
+  "description": "Martillos, destornilladores y llaves."
+}
+
+###
+
+DELETE {{tienda_1_HostAddress}}/api/categories/6
+
+### Productos
+
+GET {{tienda_1_HostAddress}}/api/products
+Accept: application/json
+
+###
+
+GET {{tienda_1_HostAddress}}/api/products?categoryId=1
+Accept: application/json
+
+###
+
+GET {{tienda_1_HostAddress}}/api/products/1
+Accept: application/json
+
+###
+
+POST {{tienda_1_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Cinta Métrica 5m",
+  "description": "Cinta métrica retráctil de 5 metros",
+  "price": 9.99,
+  "stock": 75,
+  "categoryId": 1,
+  "imageUrl": null
+}
+
+###
+
+PUT {{tienda_1_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Martillo de Uña",
+  "description": "Martillo de acero forjado con mango ergonómico",
+  "price": 17.99,
+  "stock": 45,
+  "categoryId": 1,
+  "imageUrl": null
+}
+
+###
+
+DELETE {{tienda_1_HostAddress}}/api/products/11

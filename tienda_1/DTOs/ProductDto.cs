@@ -1,6 +1,6 @@
-namespace tienda_1.Models;
+namespace tienda_1.DTOs;
 
-public class Product
+public class ProductDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -8,7 +8,6 @@ public class Product
     public decimal Price { get; set; }
     public int Stock { get; set; }
     public int CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
-
-    public Category Category { get; set; } = null!;
 }
