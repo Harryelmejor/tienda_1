@@ -11,4 +11,5 @@ public class Product
     public string? ImageUrl { get; set; }
 
     public Category Category { get; set; } = null!;
+    public ICollection<SaleDetail> SaleDetails { get; set; } = new List<SaleDetail>();
 }
