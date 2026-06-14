@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferretería - Tienda</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 20px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tabs button { padding: 10px 20px; border: none; background: #ddd; cursor: pointer; border-radius: 5px; font-size: 14px; }
+        .tabs button:hover { background: #bbb; }
+        .tabs button.activo { background: #2c3e50; color: white; }
+        .tab-content { display: none; }
+        .tab-content.activo { display: block; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #2c3e50; color: white; }
+        tr:hover { background: #f1f1f1; }
+        .badge { background: #27ae60; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
+        .badge-stock-bajo { background: #e74c3c; }
+        .loading { text-align: center; padding: 40px; color: #999; }
+        .error { color: #e74c3c; padding: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Ferretería - Sistema de Gestión</h1>
+    <p>Datos cargados desde la API</p>
+
+    <div class="tabs">
+        <button class="activo" onclick="cambiarTab('productos', this)">Productos</button>
+        <button onclick="cambiarTab('categorias', this)">Categorías</button>
+        <button onclick="cambiarTab('proveedores', this)">Proveedores</button>
+        <button onclick="cambiarTab('clientes', this)">Clientes</button>
+        <button onclick="cambiarTab('ventas', this)">Ventas</button>
+    </div>
+
+    <div id="tab-productos" class="tab-content activo">
+        <table>
+            <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Categoría</th></tr></thead>
+            <tbody id="tabla-productos"><tr><td colspan="6" class="loading">Cargando...</td></tr></tbody>
+        </table>
+    </div>
+
+    <div id="tab-categorias" class="tab-content">
+        <table>
+            <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th></tr></thead>
+            <tbody id="tabla-categorias"><tr><td colspan="3" class="loading">Cargando...</td></tr></tbody>
+        </table>
+    </div>
+
+    <div id="tab-proveedores" class="tab-content">
+        <table>
+            <thead><tr><th>ID</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Dirección</th></tr></thead>
+            <tbody id="tabla-proveedores"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+        </table>
+    </div>
+
+    <div id="tab-clientes" class="tab-content">
+        <table>
+            <thead><tr><th>ID</th><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Dirección</th></tr></thead>
+            <tbody id="tabla-clientes"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+        </table>
+    </div>
+
+    <div id="tab-ventas" class="tab-content">
+        <table>
+            <thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Productos</th></tr></thead>
+            <tbody id="tabla-ventas"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+        </table>
+    </div>
+
+    <script>
+        const API = '';
+
+        function cambiarTab(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('activo'));
+            document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('activo'));
+            document.getElementById('tab-' + id).classList.add('activo');
+            btn.classList.add('activo');
+        }
+
+        async function cargar(url, tablaId, renderFn) {
+            const tbody = document.getElementById(tablaId);
+            try {
+                const res = await fetch(API + url);
+                if (!res.ok) throw new Error('Error ' + res.status);
+                const data = await res.json();
+                tbody.innerHTML = data.length === 0
+                    ? '<tr><td colspan="10" style="text-align:center;color:#999">Sin datos</td></tr>'
+                    : data.map(renderFn).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="10" class="error">Error al cargar: ' + e.message + '</td></tr>';
+            }
+        }
+
+        function moneda(n) { return '$' + Number(n).toLocaleString('es-DO', { minimumFractionDigits: 2 }); }
+        function fecha(s) { return new Date(s).toLocaleDateString('es-DO'); }
+
+        function renderProducto(p) {
+            const stockClass = p.stock < 10 ? 'badge stock-bajo' : 'badge';
+            return '<tr><td>' + p.id + '</td><td>' + p.name + '</td><td>' + (p.description || '-') + '</td><td>' + moneda(p.price) + '</td><td><span class="' + stockClass + '">' + p.stock + '</span></td><td>' + (p.categoryName || '-') + '</td></tr>';
+        }
+
+        function renderCategoria(c) {
+            return '<tr><td>' + c.id + '</td><td>' + c.name + '</td><td>' + (c.description || '-') + '</td></tr>';
+        }
+
+        function renderProveedor(p) {
+            return '<tr><td>' + p.id + '</td><td>' + p.name + '</td><td>' + (p.phone || '-') + '</td><td>' + (p.email || '-') + '</td><td>' + (p.address || '-') + '</td></tr>';
+        }
+
+        function renderCliente(c) {
+            return '<tr><td>' + c.id + '</td><td>' + c.name + '</td><td>' + (c.identification || '-') + '</td><td>' + (c.phone || '-') + '</td><td>' + (c.address || '-') + '</td></tr>';
+        }
+
+        function renderVenta(v) {
+            const detalles = v.details && v.details.length
+                ? v.details.map(d => d.product?.name || 'Prod #' + d.productId + ' x' + d.quantity).join(', ')
+                : '-';
+            return '<tr><td>' + v.id + '</td><td>' + fecha(v.date) + '</td><td>' + (v.client?.name || 'Sin cliente') + '</td><td>' + moneda(v.total) + '</td><td>' + detalles + '</td></tr>';
+        }
+
+        cargar('/api/products', 'tabla-productos', renderProducto);
+        cargar('/api/categories', 'tabla-categorias', renderCategoria);
+        cargar('/api/suppliers', 'tabla-proveedores', renderProveedor);
+        cargar('/api/clients', 'tabla-clientes', renderCliente);
+        cargar('/api/sales', 'tabla-ventas', renderVenta);
+    </script>
+</body>
+</html>
