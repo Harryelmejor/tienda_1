@@ -48,10 +48,10 @@ public class SalesController : ControllerBase
         {
             var product = await _context.Products.FindAsync(detail.ProductId);
             if (product == null)
-                return BadRequest($"Producto con ID {detail.ProductId} no existe.");
+                return BadRequest($"Product with ID {detail.ProductId} does not exist.");
 
             if (product.Stock < detail.Quantity)
-                return BadRequest($"Stock insuficiente para '{product.Name}'. Disponible: {product.Stock}");
+                return BadRequest($"Insufficient stock for '{product.Name}'. Available: {product.Stock}");
 
             detail.UnitPrice = product.Price;
             detail.Subtotal = detail.Quantity * detail.UnitPrice;

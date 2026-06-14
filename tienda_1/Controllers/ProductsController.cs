@@ -72,7 +72,7 @@ public class ProductsController : ControllerBase
     {
         var categoryExists = await _context.Categories.AnyAsync(c => c.Id == dto.CategoryId);
         if (!categoryExists)
-            return BadRequest("La categoría indicada no existe.");
+            return BadRequest("The specified category does not exist.");
 
         var product = new Product
         {
@@ -113,7 +113,7 @@ public class ProductsController : ControllerBase
 
         var categoryExists = await _context.Categories.AnyAsync(c => c.Id == dto.CategoryId);
         if (!categoryExists)
-            return BadRequest("La categoría indicada no existe.");
+            return BadRequest("The specified category does not exist.");
 
         product.Name = dto.Name;
         product.Description = dto.Description;

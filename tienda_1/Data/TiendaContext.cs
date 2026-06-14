@@ -19,50 +19,18 @@ public class TiendaContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Category>(entity =>
-        {
-            entity.ToTable("Categorias");
-            entity.Property(e => e.Name).HasColumnName("Nombre");
-            entity.Property(e => e.Description).HasColumnName("Descripcion");
-        });
-
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.ToTable("Productos");
-            entity.Property(e => e.Name).HasColumnName("Nombre");
-            entity.Property(e => e.Description).HasColumnName("Descripcion");
-            entity.Property(e => e.Price).HasColumnName("Precio").HasPrecision(18, 2);
-            entity.Property(e => e.CategoryId).HasColumnName("CategoriaId");
-            entity.Property(e => e.ImageUrl).HasColumnName("ImagenUrl");
+            entity.Property(e => e.Price).HasPrecision(18, 2);
 
             entity.HasOne(e => e.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(e => e.CategoryId);
         });
 
-        modelBuilder.Entity<Supplier>(entity =>
-        {
-            entity.ToTable("Proveedores");
-            entity.Property(e => e.Name).HasColumnName("Nombre");
-            entity.Property(e => e.Phone).HasColumnName("Telefono");
-            entity.Property(e => e.Email).HasColumnName("Correo");
-            entity.Property(e => e.Address).HasColumnName("Direccion");
-        });
-
-        modelBuilder.Entity<Client>(entity =>
-        {
-            entity.ToTable("Clientes");
-            entity.Property(e => e.Name).HasColumnName("Nombre");
-            entity.Property(e => e.Identification).HasColumnName("Cedula");
-            entity.Property(e => e.Phone).HasColumnName("Telefono");
-            entity.Property(e => e.Address).HasColumnName("Direccion");
-        });
-
         modelBuilder.Entity<Sale>(entity =>
         {
-            entity.ToTable("Ventas");
-            entity.Property(e => e.Date).HasColumnName("Fecha").HasDefaultValueSql("GETDATE()");
-            entity.Property(e => e.ClientId).HasColumnName("ClienteId");
+            entity.Property(e => e.Date).HasDefaultValueSql("GETDATE()");
             entity.Property(e => e.Total).HasPrecision(18, 2);
 
             entity.HasOne(e => e.Client)
@@ -72,11 +40,7 @@ public class TiendaContext : DbContext
 
         modelBuilder.Entity<SaleDetail>(entity =>
         {
-            entity.ToTable("DetalleVentas");
-            entity.Property(e => e.SaleId).HasColumnName("VentaId");
-            entity.Property(e => e.ProductId).HasColumnName("ProductoId");
-            entity.Property(e => e.Quantity).HasColumnName("Cantidad");
-            entity.Property(e => e.UnitPrice).HasColumnName("PrecioUnitario").HasPrecision(18, 2);
+            entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
             entity.Property(e => e.Subtotal).HasPrecision(18, 2);
 
             entity.HasOne(e => e.Sale)
@@ -90,12 +54,6 @@ public class TiendaContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.ToTable("Usuarios");
-            entity.Property(e => e.FullName).HasColumnName("Nombre");
-            entity.Property(e => e.Username).HasColumnName("Usuario");
-            entity.Property(e => e.Password).HasColumnName("Clave");
-            entity.Property(e => e.Role).HasColumnName("Rol");
-
             entity.HasIndex(e => e.Username).IsUnique();
         });
     }

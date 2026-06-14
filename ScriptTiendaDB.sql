@@ -1,99 +1,94 @@
-CREATE DATABASE TiendaDB;
+CREATE DATABASE HardwareStoreDB;
 GO
 
-USE TiendaDB;
+USE HardwareStoreDB;
 GO
 
--- Tabla Categorias
-CREATE TABLE Categorias (
+CREATE TABLE Categories (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL,
-    Descripcion NVARCHAR(255)
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(255)
 );
 
--- Tabla Productos
-CREATE TABLE Productos (
+CREATE TABLE Products (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(150) NOT NULL,
-    Descripcion NVARCHAR(500),
-    Precio DECIMAL(18,2) NOT NULL,
+    Name NVARCHAR(150) NOT NULL,
+    Description NVARCHAR(500),
+    Price DECIMAL(18,2) NOT NULL,
     Stock INT NOT NULL DEFAULT 0,
-    CategoriaId INT NOT NULL,
-    ImagenUrl NVARCHAR(500),
+    CategoryId INT NOT NULL,
+    ImageUrl NVARCHAR(500),
 
-    CONSTRAINT FK_Productos_Categorias
-        FOREIGN KEY (CategoriaId)
-        REFERENCES Categorias(Id)
+    CONSTRAINT FK_Products_Categories
+        FOREIGN KEY (CategoryId)
+        REFERENCES Categories(Id)
 );
 
--- Datos de ejemplo
-INSERT INTO Categorias (Nombre, Descripcion)
+INSERT INTO Categories (Name, Description)
 VALUES
-('Electrónica', 'Productos electrónicos'),
-('Ropa', 'Prendas de vestir'),
-('Hogar', 'Artículos para el hogar');
+('Electronics', 'Electronic products'),
+('Clothing', 'Clothing items'),
+('Home', 'Home goods');
 
-INSERT INTO Productos
-(Nombre, Descripcion, Precio, Stock, CategoriaId, ImagenUrl)
+INSERT INTO Products (Name, Description, Price, Stock, CategoryId, ImageUrl)
 VALUES
-('Laptop HP', 'Laptop Core i5', 45000.00, 10, 1, NULL),
-('Camisa Polo', 'Camisa de algodón', 1200.00, 25, 2, NULL),
-('Licuadora', 'Licuadora 2 litros', 3500.00, 8, 3, NULL);
+('HP Laptop', 'Core i5 Laptop', 45000.00, 10, 1, NULL),
+('Polo Shirt', 'Cotton polo shirt', 1200.00, 25, 2, NULL),
+('Blender', '2-liter blender', 3500.00, 8, 3, NULL);
 
-CREATE TABLE Proveedores (
+CREATE TABLE Suppliers (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(150) NOT NULL,
-    Telefono NVARCHAR(20),
-    Correo NVARCHAR(100),
-    Direccion NVARCHAR(255)
+    Name NVARCHAR(150) NOT NULL,
+    Phone NVARCHAR(20),
+    Email NVARCHAR(100),
+    Address NVARCHAR(255)
 );
 
-CREATE TABLE Clientes (
+CREATE TABLE Clients (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(150) NOT NULL,
-    Cedula NVARCHAR(20),
-    Telefono NVARCHAR(20),
-    Direccion NVARCHAR(255)
+    Name NVARCHAR(150) NOT NULL,
+    Identification NVARCHAR(20),
+    Phone NVARCHAR(20),
+    Address NVARCHAR(255)
 );
 
-CREATE TABLE Ventas (
+CREATE TABLE Sales (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Fecha DATETIME DEFAULT GETDATE(),
-    ClienteId INT NULL,
+    Date DATETIME DEFAULT GETDATE(),
+    ClientId INT NULL,
     Total DECIMAL(18,2) NOT NULL,
 
-    FOREIGN KEY (ClienteId) REFERENCES Clientes(Id)
+    FOREIGN KEY (ClientId) REFERENCES Clients(Id)
 );
 
-CREATE TABLE DetalleVentas (
+CREATE TABLE SaleDetails (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    VentaId INT NOT NULL,
-    ProductoId INT NOT NULL,
-    Cantidad INT NOT NULL,
-    PrecioUnitario DECIMAL(18,2) NOT NULL,
+    SaleId INT NOT NULL,
+    ProductId INT NOT NULL,
+    Quantity INT NOT NULL,
+    UnitPrice DECIMAL(18,2) NOT NULL,
     Subtotal DECIMAL(18,2) NOT NULL,
 
-    FOREIGN KEY (VentaId) REFERENCES Ventas(Id),
-    FOREIGN KEY (ProductoId) REFERENCES Productos(Id)
+    FOREIGN KEY (SaleId) REFERENCES Sales(Id),
+    FOREIGN KEY (ProductId) REFERENCES Products(Id)
 );
 
-CREATE TABLE Usuarios (
+CREATE TABLE Users (
     Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL,
-    Usuario NVARCHAR(50) UNIQUE NOT NULL,
-    Clave NVARCHAR(255) NOT NULL,
-    Rol NVARCHAR(30) NOT NULL
+    FullName NVARCHAR(100) NOT NULL,
+    Username NVARCHAR(50) UNIQUE NOT NULL,
+    Password NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(30) NOT NULL
 );
 
-INSERT INTO Categorias (Nombre, Descripcion)
+INSERT INTO Categories (Name, Description)
 VALUES
-('Herramientas','Herramientas manuales y eléctricas'),
-('Pinturas','Pinturas y accesorios'),
-('Electricidad','Materiales eléctricos'),
-('Plomería','Tuberías y accesorios'),
-('Construcción','Materiales de construcción');
+('Tools','Hand and power tools'),
+('Paints','Paints and accessories'),
+('Electrical','Electrical supplies'),
+('Plumbing','Pipes and fittings'),
+('Construction','Building materials');
 
-INSERT INTO Proveedores
-(Nombre,Telefono,Correo,Direccion)
+INSERT INTO Suppliers (Name, Phone, Email, Address)
 VALUES
-('FerreSuplidor SRL','809-555-1000','ventas@ferresuplidor.com','Santo Domingo');
+('HardwareSupplier SRL','809-555-1000','sales@hardwaresupplier.com','Santo Domingo');

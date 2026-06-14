@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
     {
         var exists = await _context.Users.AnyAsync(u => u.Username == user.Username);
         if (exists)
-            return BadRequest("El nombre de usuario ya existe.");
+            return BadRequest("Username already exists.");
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();

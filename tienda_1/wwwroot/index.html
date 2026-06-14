@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería - Tienda</title>
+    <title>Hardware Store - Management System</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
@@ -12,122 +12,122 @@
         .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
         .tabs button { padding: 10px 20px; border: none; background: #ddd; cursor: pointer; border-radius: 5px; font-size: 14px; }
         .tabs button:hover { background: #bbb; }
-        .tabs button.activo { background: #2c3e50; color: white; }
+        .tabs button.active { background: #2c3e50; color: white; }
         .tab-content { display: none; }
-        .tab-content.activo { display: block; }
+        .tab-content.active { display: block; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #2c3e50; color: white; }
         tr:hover { background: #f1f1f1; }
         .badge { background: #27ae60; color: white; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
-        .badge-stock-bajo { background: #e74c3c; }
+        .badge-low-stock { background: #e74c3c; }
         .loading { text-align: center; padding: 40px; color: #999; }
         .error { color: #e74c3c; padding: 20px; text-align: center; }
     </style>
 </head>
 <body>
-    <h1>Ferretería - Sistema de Gestión</h1>
-    <p>Datos cargados desde la API</p>
+    <h1>Hardware Store - Management System</h1>
+    <p>Data loaded from the API</p>
 
     <div class="tabs">
-        <button class="activo" onclick="cambiarTab('productos', this)">Productos</button>
-        <button onclick="cambiarTab('categorias', this)">Categorías</button>
-        <button onclick="cambiarTab('proveedores', this)">Proveedores</button>
-        <button onclick="cambiarTab('clientes', this)">Clientes</button>
-        <button onclick="cambiarTab('ventas', this)">Ventas</button>
+        <button class="active" onclick="switchTab('products', this)">Products</button>
+        <button onclick="switchTab('categories', this)">Categories</button>
+        <button onclick="switchTab('suppliers', this)">Suppliers</button>
+        <button onclick="switchTab('clients', this)">Clients</button>
+        <button onclick="switchTab('sales', this)">Sales</button>
     </div>
 
-    <div id="tab-productos" class="tab-content activo">
+    <div id="tab-products" class="tab-content active">
         <table>
-            <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Stock</th><th>Categoría</th></tr></thead>
-            <tbody id="tabla-productos"><tr><td colspan="6" class="loading">Cargando...</td></tr></tbody>
+            <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Stock</th><th>Category</th></tr></thead>
+            <tbody id="table-products"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody>
         </table>
     </div>
 
-    <div id="tab-categorias" class="tab-content">
+    <div id="tab-categories" class="tab-content">
         <table>
-            <thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th></tr></thead>
-            <tbody id="tabla-categorias"><tr><td colspan="3" class="loading">Cargando...</td></tr></tbody>
+            <thead><tr><th>ID</th><th>Name</th><th>Description</th></tr></thead>
+            <tbody id="table-categories"><tr><td colspan="3" class="loading">Loading...</td></tr></tbody>
         </table>
     </div>
 
-    <div id="tab-proveedores" class="tab-content">
+    <div id="tab-suppliers" class="tab-content">
         <table>
-            <thead><tr><th>ID</th><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Dirección</th></tr></thead>
-            <tbody id="tabla-proveedores"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+            <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Email</th><th>Address</th></tr></thead>
+            <tbody id="table-suppliers"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
         </table>
     </div>
 
-    <div id="tab-clientes" class="tab-content">
+    <div id="tab-clients" class="tab-content">
         <table>
-            <thead><tr><th>ID</th><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Dirección</th></tr></thead>
-            <tbody id="tabla-clientes"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+            <thead><tr><th>ID</th><th>Name</th><th>Identification</th><th>Phone</th><th>Address</th></tr></thead>
+            <tbody id="table-clients"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
         </table>
     </div>
 
-    <div id="tab-ventas" class="tab-content">
+    <div id="tab-sales" class="tab-content">
         <table>
-            <thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Productos</th></tr></thead>
-            <tbody id="tabla-ventas"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+            <thead><tr><th>ID</th><th>Date</th><th>Client</th><th>Total</th><th>Products</th></tr></thead>
+            <tbody id="table-sales"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
         </table>
     </div>
 
     <script>
         const API = '';
 
-        function cambiarTab(id, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('activo'));
-            document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('activo'));
-            document.getElementById('tab-' + id).classList.add('activo');
-            btn.classList.add('activo');
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            btn.classList.add('active');
         }
 
-        async function cargar(url, tablaId, renderFn) {
-            const tbody = document.getElementById(tablaId);
+        async function load(url, tableId, renderFn) {
+            const tbody = document.getElementById(tableId);
             try {
                 const res = await fetch(API + url);
                 if (!res.ok) throw new Error('Error ' + res.status);
                 const data = await res.json();
                 tbody.innerHTML = data.length === 0
-                    ? '<tr><td colspan="10" style="text-align:center;color:#999">Sin datos</td></tr>'
+                    ? '<tr><td colspan="10" style="text-align:center;color:#999">No data</td></tr>'
                     : data.map(renderFn).join('');
             } catch (e) {
-                tbody.innerHTML = '<tr><td colspan="10" class="error">Error al cargar: ' + e.message + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="error">Error loading data: ' + e.message + '</td></tr>';
             }
         }
 
-        function moneda(n) { return '$' + Number(n).toLocaleString('es-DO', { minimumFractionDigits: 2 }); }
-        function fecha(s) { return new Date(s).toLocaleDateString('es-DO'); }
+        function currency(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2 }); }
+        function date(s) { return new Date(s).toLocaleDateString('en-US'); }
 
-        function renderProducto(p) {
-            const stockClass = p.stock < 10 ? 'badge stock-bajo' : 'badge';
-            return '<tr><td>' + p.id + '</td><td>' + p.name + '</td><td>' + (p.description || '-') + '</td><td>' + moneda(p.price) + '</td><td><span class="' + stockClass + '">' + p.stock + '</span></td><td>' + (p.categoryName || '-') + '</td></tr>';
+        function renderProduct(p) {
+            const stockClass = p.stock < 10 ? 'badge badge-low-stock' : 'badge';
+            return '<tr><td>' + p.id + '</td><td>' + p.name + '</td><td>' + (p.description || '-') + '</td><td>' + currency(p.price) + '</td><td><span class="' + stockClass + '">' + p.stock + '</span></td><td>' + (p.categoryName || '-') + '</td></tr>';
         }
 
-        function renderCategoria(c) {
+        function renderCategory(c) {
             return '<tr><td>' + c.id + '</td><td>' + c.name + '</td><td>' + (c.description || '-') + '</td></tr>';
         }
 
-        function renderProveedor(p) {
+        function renderSupplier(p) {
             return '<tr><td>' + p.id + '</td><td>' + p.name + '</td><td>' + (p.phone || '-') + '</td><td>' + (p.email || '-') + '</td><td>' + (p.address || '-') + '</td></tr>';
         }
 
-        function renderCliente(c) {
+        function renderClient(c) {
             return '<tr><td>' + c.id + '</td><td>' + c.name + '</td><td>' + (c.identification || '-') + '</td><td>' + (c.phone || '-') + '</td><td>' + (c.address || '-') + '</td></tr>';
         }
 
-        function renderVenta(v) {
-            const detalles = v.details && v.details.length
-                ? v.details.map(d => d.product?.name || 'Prod #' + d.productId + ' x' + d.quantity).join(', ')
+        function renderSale(v) {
+            const details = v.details && v.details.length
+                ? v.details.map(d => d.product?.name || 'Product #' + d.productId + ' x' + d.quantity).join(', ')
                 : '-';
-            return '<tr><td>' + v.id + '</td><td>' + fecha(v.date) + '</td><td>' + (v.client?.name || 'Sin cliente') + '</td><td>' + moneda(v.total) + '</td><td>' + detalles + '</td></tr>';
+            return '<tr><td>' + v.id + '</td><td>' + date(v.date) + '</td><td>' + (v.client?.name || 'No client') + '</td><td>' + currency(v.total) + '</td><td>' + details + '</td></tr>';
         }
 
-        cargar('/api/products', 'tabla-productos', renderProducto);
-        cargar('/api/categories', 'tabla-categorias', renderCategoria);
-        cargar('/api/suppliers', 'tabla-proveedores', renderProveedor);
-        cargar('/api/clients', 'tabla-clientes', renderCliente);
-        cargar('/api/sales', 'tabla-ventas', renderVenta);
+        load('/api/products', 'table-products', renderProduct);
+        load('/api/categories', 'table-categories', renderCategory);
+        load('/api/suppliers', 'table-suppliers', renderSupplier);
+        load('/api/clients', 'table-clients', renderClient);
+        load('/api/sales', 'table-sales', renderSale);
     </script>
 </body>
 </html>

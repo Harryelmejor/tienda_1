@@ -92,7 +92,7 @@ public class CategoriesController : ControllerBase
 
         var hasProducts = await _context.Products.AnyAsync(p => p.CategoryId == id);
         if (hasProducts)
-            return BadRequest("No se puede eliminar una categoría que tiene productos asociados.");
+            return BadRequest("Cannot delete a category that has associated products.");
 
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
